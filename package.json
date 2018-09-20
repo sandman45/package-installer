@@ -1,0 +1,19 @@
+{
+  "name": "package-installer",
+  "version": "1.0.0",
+  "description": "package installer coding exersize",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sandman45/package-installer.git"
+  },
+  "author": "Matthew W. Sanders",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sandman45/package-installer/issues"
+  },
+  "homepage": "https://github.com/sandman45/package-installer#readme"
+}
