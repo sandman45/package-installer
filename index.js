@@ -93,8 +93,6 @@ module.exports = {
         }
         return module.exports.checkCycle(obj[library], obj, count, cycle);
     },
-
-
     arrangePackages: (obj) => {
         let order = '';
         const checkForDep = (lib) => {
@@ -133,25 +131,12 @@ module.exports = {
     },
 };
 
+process.argv.forEach((val, i, array) => {
+    const packageArray = array.splice(2, array.length - 1);
+    // this is to prevent module.exports.installPackage from being run if unit tests are going
+    if (packageArray.length > 0 && !(packageArray[0] === '--timeout' || packageArray[0] === '--ui')) {
+        console.log(`Arguments: ${packageArray}`);
+        module.exports.installPackage(packageArray);
+    }
+});
 
-// process.argv.forEach((val, i, array) => {
-//     const packageArray = array.splice(2, array.length - 1);
-//     console.log(`Arguments: ${packageArray}`);
-//     module.exports.installPackage(packageArray);
-// });
-
-// valid
-// module.exports.installPackage(['KittenService: CamelCaser', 'CamelCaser: ']);
-//
-
-// module.exports.installPackage([
-//     'KittenService: ', 'Leetmeme: Cyberportal', 'Cyberportal: Ice', 'CamelCaser: KittenService', 'Fraudstream: Leetmeme', 'Ice:',
-// ]);
-
-// invalid
-// module.exports.installPackage(['KittenService: ',
-//     'Leetmeme: Cyberportal',
-//     'Cyberportal: Ice',
-//     'CamelCaser: KittenService',
-//     'Fraudstream: ',
-//     'Ice: Leetmeme']);
