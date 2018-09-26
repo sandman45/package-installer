@@ -124,13 +124,11 @@ module.exports = {
             if (dep.length > 0) {
                 checkForDep(key);
                 if (order.search(key) === -1) {
-                    console.log(`adding ${key} to order list`);
                     order += `${key}, `;
                 }
             }
         });
         const installList = order.substring(0, order.length - 2);
-        console.log(installList);
         return installList;
     },
 };
@@ -139,12 +137,14 @@ module.exports = {
 //
 
 // process.argv.forEach((val, i, array) => {
-//     console.log(i + ':' + val);
+//     const packageArray = array.splice(2, array.length - 1);
+//     console.log(`Arguments: ${packageArray}`);
+//     module.exports.installPackage(packageArray);
 // });
 
-module.exports.installPackage([
-    'KittenService: ', 'Leetmeme: Cyberportal', 'Cyberportal: Ice', 'CamelCaser: KittenService', 'Fraudstream: Leetmeme', 'Ice:',
-]);
+// module.exports.installPackage([
+//     'KittenService: ', 'Leetmeme: Cyberportal', 'Cyberportal: Ice', 'CamelCaser: KittenService', 'Fraudstream: Leetmeme', 'Ice:',
+// ]);
 
 // invalid
 // module.exports.installPackage(['KittenService: ',

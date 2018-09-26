@@ -11,6 +11,20 @@ describe('index', () => {
             expect(results).to.eq('CamelCaser, KittenService');
         });
 
+        it('should accept an array as parameters and return KittenService, Ice, Cyberportal, Leetmeme, CamelCaser, Fraudstream', () => {
+            const pi = require('../index');
+            const packages = [
+                'KittenService: ',
+                'Leetmeme: Cyberportal',
+                'Cyberportal: Ice',
+                'CamelCaser: KittenService',
+                'Fraudstream: Leetmeme',
+                'Ice: ',
+            ];
+            const results = pi.installPackage(packages);
+            expect(results).to.eq('KittenService, Ice, Cyberportal, Leetmeme, CamelCaser, Fraudstream');
+        });
+
         it('should reject if it is not an array', () => {
             const pi = require('../index');
 
