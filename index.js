@@ -17,20 +17,16 @@ module.exports = {
                     // check if its already in order of install
                     if (orderOfInstall.indexOf(dep) === -1) {
                         orderOfInstall.push(dep);
-                        // console.log(`dep: ${dep}`);
                         cycleError.lib[lib] = dep;
                     } else {
-                        // console.log(`dep: ${dep}, already in install list`);
                         cycleError.lib[lib] = dep;
                     }
                 }
                 if (pack[0].length > 1) {
                     if (orderOfInstall.indexOf(lib) === -1) {
-                        // console.log(`lib: ${lib}`);
                         orderOfInstall.push(lib);
                         cycleError.lib[lib] = dep;
                     } else {
-                        // console.log(`lib: ${lib}, already in install list`);
                         cycleError.lib[lib] = dep;
                     }
                 }
@@ -38,7 +34,7 @@ module.exports = {
 
             // check cycle
             module.exports.checkLibraries(cycleError.lib, orderOfInstall);
-            const results = module.exports.arrangePackages(orderOfInstall);
+            const results = module.exports.arrangePackages(cycleError.lib);
             console.log(`results: ${results}`);
             return results;
         }
@@ -47,10 +43,8 @@ module.exports = {
     checkLibraries: (obj, libraries) => {
         const possibleCycleError = [];
         _.each(libraries, (lib) => {
-            // console.log(obj[lib]);
             if (obj[lib].length > 1) {
                 const libRes = module.exports.checkDependencies(obj[lib], obj);
-                // console.log('-----');
                 if (libRes[1]) {
                     possibleCycleError.push(libRes[0]);
                 }
@@ -60,7 +54,6 @@ module.exports = {
         if (possibleCycleError.length > 0) {
             _.each(possibleCycleError, (ce) => {
                 const res = module.exports.checkCycle(ce, obj, 0, '');
-                // console.log(res);
             });
         }
     },
@@ -71,17 +64,14 @@ module.exports = {
         let mainLibrary = false;
         _.each(keys, (key) => {
             if (key === library) {
-                // console.log(`${library}: is a main library`);
                 mainLibrary = true;
             }
             if (checkObj[key] === library) {
-                // console.log(`${library}: is a dependency of ${key} `);
                 dependency = true;
             }
         });
 
         if (dependency && mainLibrary) {
-            // console.log(`possible cycle with ${library}`);
             rArr[0] = library;
             rArr[1] = true;
             return rArr;
@@ -92,34 +82,62 @@ module.exports = {
     },
     checkCycle: (library, obj, count, cycle) => {
         if (count > 5) {
-            // console.log(`${library}: Cycle`);
             count = 0;
-            // console.log(cycle);
             throw Error(`Cycle Detected => ${cycle}`);
         }
         count++;
         cycle += `${obj[library]}, `;
-        // console.log(obj[library]);
         if (obj[library] === undefined) {
-            // console.log(`${library}: No Cycle`);
-            // console.log(cycle);
             count = 0;
             return cycle;
         }
         return module.exports.checkCycle(obj[library], obj, count, cycle);
     },
-    arrangePackages: (lib) => {
-        let list = '';
-        _.each(lib, (l) => {
-            list += `${l}, `;
+
+
+    arrangePackages: (obj) => {
+        let order = '';
+        const checkForDep = (lib) => {
+            if (obj[lib].length > 0) {
+                // check for more dependencies
+                // is this dependency already in install list?
+                if (order.search(obj[lib]) !== -1) {
+                    // add to list
+                    order += `${lib}, `;
+                } else {
+                    // keep going
+                    checkForDep(obj[lib]);
+                }
+            } else {
+                // no dependencies add to list
+                if (order.search(lib) === -1) {
+                    order += `${lib}, `;
+                }
+            }
+        };
+        // recursive for dependecies
+        _.each(obj, (dep, key) => {
+            checkForDep(key);
         });
-        const mylist = list.substring(0, list.length - 2);
-        return mylist;
+        // check each library to make sure it was added to the list
+        _.each(obj, (dep, key) => {
+            if (order.search(key) === -1) {
+                order += `${key}, `;
+            }
+        });
+        const installList = order.substring(0, order.length - 2);
+        console.log(installList);
+        return installList;
     },
 };
-
+// valid
 // module.exports.installPackage(['KittenService: CamelCaser', 'CamelCaser: ']);
 //
+module.exports.installPackage([
+    'KittenService: ', 'Leetmeme: Cyberportal', 'Cyberportal: Ice', 'CamelCaser: KittenService', 'Fraudstream: Leetmeme', 'Ice: ',
+]);
+
+// invalid
 // module.exports.installPackage(['KittenService: ',
 //     'Leetmeme: Cyberportal',
 //     'Cyberportal: Ice',
