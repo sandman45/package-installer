@@ -132,15 +132,17 @@ module.exports = {
         return installList;
     },
 };
-// valid
-// module.exports.installPackage(['KittenService: CamelCaser', 'CamelCaser: ']);
-//
+
 
 // process.argv.forEach((val, i, array) => {
 //     const packageArray = array.splice(2, array.length - 1);
 //     console.log(`Arguments: ${packageArray}`);
 //     module.exports.installPackage(packageArray);
 // });
+
+// valid
+// module.exports.installPackage(['KittenService: CamelCaser', 'CamelCaser: ']);
+//
 
 // module.exports.installPackage([
 //     'KittenService: ', 'Leetmeme: Cyberportal', 'Cyberportal: Ice', 'CamelCaser: KittenService', 'Fraudstream: Leetmeme', 'Ice:',
